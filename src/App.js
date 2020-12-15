@@ -12,9 +12,6 @@ const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
-  const [title, setTitle] = useState('')
-  const [author, setAuthor] = useState('')
-  const [url, setUrl] = useState('')
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -30,6 +27,11 @@ const App = () => {
       blogService.setToken(user.token)
     }
   }, [])
+
+  const buttonStyle = {
+    marginLeft: 5,
+    marginBottom: 3
+  }
 
   const handleLogin = async (event) => {
     event.preventDefault();
@@ -106,7 +108,7 @@ const App = () => {
             onChange={({ target }) => setPassword(target.value)}
           />
         </p>
-        <button type="submit">login</button>
+        <button style={buttonStyle} type="submit">login</button>
       </form>
     </div>
   )
@@ -117,14 +119,14 @@ const App = () => {
       <Notification notification={notification} />
       <p>
         {user.name} logged in
-        <button type="button" onClick={handleLogout}>logout</button>
+        <button style={buttonStyle} type="button" onClick={handleLogout}>logout</button>
       </p>
       {createForm()}
-      <p>
+      <div>
       {blogs.map(blog =>
         <Blog key={blog.id} blog={blog} />
       )}
-      </p>
+      </div>
     </div>
   )
 

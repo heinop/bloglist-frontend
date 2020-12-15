@@ -6,6 +6,11 @@ const CreateForm = ({ handleCreate }) => {
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
 
+  const buttonStyle = {
+    marginLeft: 5,
+    marginBottom: 3
+  }
+
   const handleSubmit = (event) => {
     event.preventDefault()
 
@@ -35,7 +40,7 @@ const CreateForm = ({ handleCreate }) => {
           <input type="text" value={url} name="Url"
             onChange={({ target }) => setUrl(target.value)} />
         </div>
-        <button type="submit">create</button>
+        <button style={buttonStyle} type="submit">create</button>
       </form>
     </div>
   )
