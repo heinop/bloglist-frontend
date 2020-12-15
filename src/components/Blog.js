@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-const Blog = ({ blog, updateBlog }) => {
+const Blog = ({ blog, showRemove, updateBlog, deleteBlog }) => {
 
   const [showDetails, setShowDetails] = useState(false)
 
@@ -29,9 +29,21 @@ const Blog = ({ blog, updateBlog }) => {
     })
   }
 
+  const removeBlog = (event) => {
+    event.preventDefault()
+
+    deleteBlog(blog)
+  }
+
   const toggleDetails = () => {
     setShowDetails(!showDetails)
   }
+
+  const removeButton = (
+    <div>
+      <button style={buttonStyle} onClick={removeBlog}>remove</button>
+    </div>
+  )
 
   const blogDetails = (
     <div>
@@ -41,6 +53,7 @@ const Blog = ({ blog, updateBlog }) => {
         <button style={buttonStyle} onClick={addLike}>like</button>
       </div>
       <div>{blog.user.name}</div>
+      {showRemove ? removeButton : ''}
     </div>
   )
 

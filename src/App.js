@@ -65,6 +65,7 @@ const App = () => {
     try {
       createFormRef.current.toggleVisibility()
       let newBlog = await blogService.create(blogParams)
+      console.log('Created blog', JSON.stringify(newBlog))
       setBlogs(orderBlogs(blogs.concat(newBlog)))
       showMessage(`a new blog ${newBlog.title} by ${newBlog.author} added`)
     } catch (exception) {
@@ -76,11 +77,6 @@ const App = () => {
   const updateBlog = async (blogParams) => {
     try {
       let updatedBlog = await blogService.update(blogParams)
-      // let updatedBlogs = blogs.map(blog => {
-      //   return blog.id === updatedBlog.id ? updatedBlog : blog
-      // })
-      // console.log('Updated blogs', JSON.stringify(updatedBlogs))
-      // setBlogs(updatedBlogs)
       setBlogs(orderBlogs(blogs.map(blog => {
         return blog.id === updatedBlog.id ? updatedBlog : blog
       })))
@@ -88,6 +84,20 @@ const App = () => {
     } catch (exception) {
       console.error('Error updating blog', exception)
       showErrorMessage('Error updating blog')
+    }
+  }
+
+  const deleteBlog = async (blog) => {
+    if (window.confirm(`Remove blog ${blog.title} by ${blog.author}?`)) {
+      try {
+        console.log('Deleting blog ' + blog.id)
+        await blogService.remove(blog.id)
+        setBlogs(orderBlogs(blogs.filter(b => b.id !== blog.id)))
+        showMessage(`Blog ${blog.title} by ${blog.author} deleted`)
+      } catch (exception) {
+        console.error('Error deleting blog', exception)
+        showErrorMessage('Error deleting blog')
+      }
     }
   }
 
@@ -145,9 +155,11 @@ const App = () => {
       </p>
       {createForm()}
       <div>
-      {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} updateBlog={updateBlog}/>
-      )}
+        {blogs.map(blog =>
+          <Blog key={blog.id} blog={blog}
+            showRemove={user.username === blog.user.username}
+            updateBlog={updateBlog} deleteBlog={deleteBlog} />
+        )}
       </div>
     </div>
   )
