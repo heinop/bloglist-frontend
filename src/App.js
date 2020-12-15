@@ -14,9 +14,11 @@ const App = () => {
   const [user, setUser] = useState(null)
 
   useEffect(() => {
-    blogService.getAll().then(blogs =>
-      setBlogs(blogs)
-    )
+    async function fetchBlogs() {
+      let tempBlogs = await blogService.getAll()
+      setBlogs(tempBlogs)
+    }
+    fetchBlogs()
   }, [])
 
   useEffect(() => {
@@ -66,6 +68,24 @@ const App = () => {
     } catch (exception) {
       console.error('Error creating new blog', exception)
       showErrorMessage('Error adding new blog')
+    }
+  }
+
+  const updateBlog = async (blogParams) => {
+    try {
+      let updatedBlog = await blogService.update(blogParams)
+      // let updatedBlogs = blogs.map(blog => {
+      //   return blog.id === updatedBlog.id ? updatedBlog : blog
+      // })
+      // console.log('Updated blogs', JSON.stringify(updatedBlogs))
+      // setBlogs(updatedBlogs)
+      setBlogs(blogs.map(blog => {
+        return blog.id === updatedBlog.id ? updatedBlog : blog
+      }))
+      showMessage(`Blog ${updatedBlog.title} by ${updatedBlog.author} updated`)
+    } catch (exception) {
+      console.error('Error updating blog', exception)
+      showErrorMessage('Error updating blog')
     }
   }
 
@@ -124,7 +144,7 @@ const App = () => {
       {createForm()}
       <div>
       {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} />
+        <Blog key={blog.id} blog={blog} updateBlog={updateBlog}/>
       )}
       </div>
     </div>
