@@ -1,6 +1,8 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import Blog from './components/Blog'
 import Notification from './components/Notification'
+import Togglable from './components/Togglable'
+import CreateForm from './components/CreateForm'
 import blogService from './services/blogs'
 import loginService from './services/login'
 
@@ -53,15 +55,11 @@ const App = () => {
     blogService.setToken(null)
   }
 
-  const handleCreate = async (event) => {
-    event.preventDefault()
-
+  const addBlog = async (blogParams) => {
     try {
-      let newBlog = await blogService.create({ title, author, url })
+      createFormRef.current.toggleVisibility()
+      let newBlog = await blogService.create(blogParams)
       setBlogs(blogs.concat(newBlog))
-      setTitle('')
-      setAuthor('')
-      setUrl('')
       showMessage(`a new blog ${newBlog.title} by ${newBlog.author} added`)
     } catch (exception) {
       console.error('Error creating new blog', exception)
@@ -122,34 +120,20 @@ const App = () => {
         <button type="button" onClick={handleLogout}>logout</button>
       </p>
       {createForm()}
+      <p>
       {blogs.map(blog =>
         <Blog key={blog.id} blog={blog} />
       )}
+      </p>
     </div>
   )
 
+  const createFormRef = useRef()
+
   const createForm = () => (
-    <div>
-      <h2>create new</h2>
-      <form onSubmit={handleCreate}>
-        <div>
-          title: 
-          <input type="text" value={title} name="Title" 
-            onChange={({ target }) => setTitle(target.value)} />
-        </div>
-        <div>
-          author: 
-          <input type="text" value={author} name="Author" 
-            onChange={({ target }) => setAuthor(target.value)} />
-        </div>
-        <div>
-          url: 
-          <input type="text" value={url} name="Url" 
-            onChange={({ target }) => setUrl(target.value)} />
-        </div>
-        <button type="submit">create</button>
-      </form>
-    </div>
+    <Togglable buttonLabel="new blog" ref={createFormRef}>
+      <CreateForm handleCreate={addBlog} />
+    </Togglable>
   )
 
   return (
