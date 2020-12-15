@@ -16,7 +16,7 @@ const App = () => {
   useEffect(() => {
     async function fetchBlogs() {
       let tempBlogs = await blogService.getAll()
-      setBlogs(tempBlogs)
+      setBlogs(orderBlogs(tempBlogs))
     }
     fetchBlogs()
   }, [])
@@ -34,6 +34,8 @@ const App = () => {
     marginLeft: 5,
     marginBottom: 3
   }
+
+  const orderBlogs = (blogArray) => blogArray.sort((a, b) => b.likes - a.likes)
 
   const handleLogin = async (event) => {
     event.preventDefault();
@@ -63,7 +65,7 @@ const App = () => {
     try {
       createFormRef.current.toggleVisibility()
       let newBlog = await blogService.create(blogParams)
-      setBlogs(blogs.concat(newBlog))
+      setBlogs(orderBlogs(blogs.concat(newBlog)))
       showMessage(`a new blog ${newBlog.title} by ${newBlog.author} added`)
     } catch (exception) {
       console.error('Error creating new blog', exception)
@@ -79,9 +81,9 @@ const App = () => {
       // })
       // console.log('Updated blogs', JSON.stringify(updatedBlogs))
       // setBlogs(updatedBlogs)
-      setBlogs(blogs.map(blog => {
+      setBlogs(orderBlogs(blogs.map(blog => {
         return blog.id === updatedBlog.id ? updatedBlog : blog
-      }))
+      })))
       showMessage(`Blog ${updatedBlog.title} by ${updatedBlog.author} updated`)
     } catch (exception) {
       console.error('Error updating blog', exception)
