@@ -47,17 +47,30 @@ describe('<Blog />', () => {
     expect(component.container).not.toHaveTextContent(
       'likes 1'
     )
-    // const titleElement = component.getByText('Test blog title')
-    // expect(titleElement).toBeDefined()
-
-    // const authorElement = component.getByText('Test Author')
-    // expect(authorElement).toBeDefined()
-
-    // const urlElement = component.getByText('http://test.blog')
-    // expect(urlElement).not.toBeDefined()
-
-    // const likesElement = component.getByText('likes 1')
-    // expect(likesElement).not.toBeDefined()
   })
 
+  test('renders also url and likes after clicking view button', () => {
+    const viewButton = component.getByText('view')
+    fireEvent.click(viewButton)
+
+    component.debug()
+
+    expect(component.container).toHaveTextContent(
+      'Test blog title'
+    )
+
+    expect(component.container).toHaveTextContent(
+      'Test Author'
+    )
+
+    expect(component.container).toHaveTextContent(
+      'http://test.blog'
+    )
+    const urlElement = component.getByText('http://test.blog')
+    expect(urlElement).toBeDefined()
+
+    expect(component.container).toHaveTextContent(
+      'likes 1'
+    )
+  })
 })
