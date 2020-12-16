@@ -38,7 +38,7 @@ const App = () => {
   const orderBlogs = (blogArray) => blogArray.sort((a, b) => b.likes - a.likes)
 
   const handleLogin = async (event) => {
-    event.preventDefault();
+    event.preventDefault()
 
     try {
       const user = await loginService.login({ username, password })

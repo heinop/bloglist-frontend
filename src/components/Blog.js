@@ -20,7 +20,7 @@ const Blog = ({ blog, showRemove, updateBlog, deleteBlog }) => {
 
   const addLike = (event) => {
     event.preventDefault()
-    
+
     updateBlog({
       id: blog.id,
       title: blog.title,
@@ -51,7 +51,7 @@ const Blog = ({ blog, showRemove, updateBlog, deleteBlog }) => {
     <div>
       <div>{blog.url}</div>
       <div>
-        likes {blog.likes} 
+        likes {blog.likes}
         <button style={buttonStyle} onClick={addLike}>like</button>
       </div>
       <div>{blog.user.name}</div>
