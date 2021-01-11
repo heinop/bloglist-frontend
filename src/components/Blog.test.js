@@ -73,4 +73,16 @@ describe('<Blog />', () => {
       'likes 1'
     )
   })
+
+  test('clicking like button calls the event handler function', () => {
+    const viewButton = component.getByText('view')
+    fireEvent.click(viewButton)
+
+    const likeButton = component.getByText('like')
+    fireEvent.click(likeButton)
+    fireEvent.click(likeButton)
+
+    expect(updateBlog).toHaveBeenCalledTimes(2)
+    expect(updateBlog.mock.calls[0][0].likes).toBe(2)
+  })
 })
