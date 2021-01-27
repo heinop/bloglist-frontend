@@ -156,7 +156,7 @@ const App = () => {
         <button id="logout-button" style={buttonStyle} type="button" onClick={handleLogout}>logout</button>
       </p>
       {createForm()}
-      <div>
+      <div id="blogs">
         {blogs.map(blog =>
           <Blog key={blog.id} blog={blog}
             showRemove={user.username === blog.user.username}

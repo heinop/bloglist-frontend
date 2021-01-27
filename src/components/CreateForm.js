@@ -41,7 +41,7 @@ const CreateForm = ({ handleCreate }) => {
           <input id="url" type="text" value={url} name="Url"
             onChange={({ target }) => setUrl(target.value)} />
         </div>
-        <button style={buttonStyle} type="submit">create</button>
+        <button id="create-button" style={buttonStyle} type="submit">create</button>
       </form>
     </div>
   )
