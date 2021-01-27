@@ -153,7 +153,7 @@ const App = () => {
       <Notification notification={notification} />
       <p>
         {user.name} logged in
-        <button style={buttonStyle} type="button" onClick={handleLogout}>logout</button>
+        <button id="logout-button" style={buttonStyle} type="button" onClick={handleLogout}>logout</button>
       </p>
       {createForm()}
       <div>
