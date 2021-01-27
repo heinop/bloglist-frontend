@@ -84,7 +84,7 @@ describe('Blog app', function () {
       cy.get('@bloglist').contains('Test Author')
     })
 
-    describe('When a blog exists', function() {
+    describe.only('When a blog exists', function() {
       beforeEach(function() {
         // Add a new blog
         cy.createBlog({
@@ -115,6 +115,35 @@ describe('Blog app', function () {
 
         // Verify 1 like for the blog
         cy.get('@theBlog').should('contain', 'likes 1')
+      })
+
+      it('it can be removed by the user who added it', function() {
+        // Bind cypress to window.confirm event
+        cy.on('window:confirm', (str) => {
+          // Verify dialog propt
+          expect(str).to.eq('Remove blog Test blog title by Test Author?')
+
+          // Accept confirmation
+          return true
+        })
+
+        // Get a reference to the blog element
+        cy.contains('Test blog title').parent().as('theBlog')
+
+        // Click view button to display remove button
+        cy.get('@theBlog').find('#toggle-details').click()
+
+        // Click remove button for the blog
+        cy.get('@theBlog').find('#remove-button').click()
+
+        // Verify notification 
+        cy.get('#notification')
+        .should('contain', 'Blog Test blog title by Test Author deleted')
+        .and('have.css', 'color', 'rgb(0, 128, 0)')
+        .and('have.css', 'border-style', 'solid')
+
+        // Verify blog is removed from list
+        cy.get('#blogs').should('not.contain', 'Test blog title')
       })
     })
   })

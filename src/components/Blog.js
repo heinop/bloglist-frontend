@@ -43,7 +43,7 @@ const Blog = ({ blog, showRemove, updateBlog, deleteBlog }) => {
 
   const removeButton = (
     <div>
-      <button style={buttonStyle} onClick={removeBlog}>remove</button>
+      <button id="remove-button" style={buttonStyle} onClick={removeBlog}>remove</button>
     </div>
   )
 
