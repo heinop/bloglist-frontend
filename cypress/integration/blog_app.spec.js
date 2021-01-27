@@ -54,15 +54,10 @@ describe('Blog app', function () {
     })
   })
 
-  describe.only('When logged in', function() {
+  describe('When logged in', function() {
     beforeEach(function() {
       // log in user
-      cy.request('POST', 'http://localhost:3003/api/login', {
-        username: 'testuser', password: 'salasana'
-      }).then(response => {
-        localStorage.setItem('bloglistAppUser', JSON.stringify(response.body))
-        cy.visit('http://localhost:3000')
-      })
+      cy.login({ username: 'testuser', password: 'salasana' })
     })
 
     it('A blog can be created', function() {
@@ -87,6 +82,40 @@ describe('Blog app', function () {
       cy.get('#blogs').as('bloglist')
       cy.get('@bloglist').contains('Test blog title')
       cy.get('@bloglist').contains('Test Author')
+    })
+
+    describe('When a blog exists', function() {
+      beforeEach(function() {
+        // Add a new blog
+        cy.createBlog({
+          title: 'Test blog title',
+          author: 'Test Author',
+          url: 'http://my.test.blog.url'
+        })
+      })
+
+      it('it can be liked', function() {
+        // Get a reference to the blog element
+        cy.contains('Test blog title').parent().as('theBlog')
+
+        // Click view button to display like button
+        cy.get('@theBlog').find('#toggle-details').click()
+
+        // Verify 0 likes for the blog
+        cy.get('@theBlog').should('contain', 'likes 0')
+
+        // Click like button for the blog
+        cy.get('@theBlog').find('#like-button').click()
+
+        // Verify notification
+        cy.get('#notification')
+        .should('contain', 'Blog Test blog title by Test Author updated')
+        .and('have.css', 'color', 'rgb(0, 128, 0)')
+        .and('have.css', 'border-style', 'solid')
+
+        // Verify 1 like for the blog
+        cy.get('@theBlog').should('contain', 'likes 1')
+      })
     })
   })
 })
