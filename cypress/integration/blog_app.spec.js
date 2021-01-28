@@ -84,7 +84,7 @@ describe('Blog app', function () {
       cy.get('@bloglist').contains('Test Author')
     })
 
-    describe.only('When a blog exists', function() {
+    describe('When a blog exists', function() {
       beforeEach(function() {
         // Add a new blog
         cy.createBlog({
@@ -144,6 +144,49 @@ describe('Blog app', function () {
 
         // Verify blog is removed from list
         cy.get('#blogs').should('not.contain', 'Test blog title')
+      })
+    })
+
+    describe('When multiple blogs exists', function() {
+      beforeEach(function() {
+        // Add blogs
+        cy.createBlog({
+          title: 'Test blog 1',
+          author: 'Test Author',
+          url: 'http://my.test.blog.url',
+          likes: 5
+        })
+
+        cy.createBlog({
+          title: 'Test blog 2',
+          author: 'Test Author',
+          url: 'http://my.test.blog.url',
+          likes: 1
+        })
+
+        cy.createBlog({
+          title: 'Test blog 3',
+          author: 'Test Author',
+          url: 'http://my.test.blog.url',
+          likes: 3
+        })
+
+        cy.createBlog({
+          title: 'Test blog 4',
+          author: 'Test Author',
+          url: 'http://my.test.blog.url',
+          likes: 12
+        })
+      })
+
+      it('the blogs are shown in order of likes', function() {
+        cy.get('#blogs').children().then(($blogs) => {
+          cy.wrap($blogs)
+            .first().should('contain', 'Test blog 4')
+            .next().should('contain', 'Test blog 1')
+            .next().should('contain', 'Test blog 3')
+            .next().should('contain', 'Test blog 2')
+        })
       })
     })
   })
