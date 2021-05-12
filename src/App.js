@@ -4,17 +4,15 @@ import Blog from './components/Blog'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
 import CreateForm from './components/CreateForm'
-import blogService from './services/blogs'
-import loginService from './services/login'
-import { showNotification } from './reducers/notificationReducer'
+import { loginUser, setUser, logout } from './reducers/userReducer'
 import { initializeBlogs, addNewBlog, updateBlog, deleteBlog } from './reducers/blogsReducer'
 
 const App = () => {
   const dispatch = useDispatch()
   const blogs = useSelector(state => state.blogs)
+  const user = useSelector(state => state.user)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-  const [user, setUser] = useState(null)
 
   useEffect(() => {
     dispatch(initializeBlogs())
@@ -24,8 +22,7 @@ const App = () => {
     const loggedUserJSON = window.localStorage.getItem('bloglistAppUser')
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
-      setUser(user)
-      blogService.setToken(user.token)
+      dispatch(setUser(user))
     }
   }, [])
 
@@ -36,26 +33,14 @@ const App = () => {
 
   const handleLogin = async (event) => {
     event.preventDefault()
-
-    try {
-      const user = await loginService.login({ username, password })
-      window.localStorage.setItem('bloglistAppUser', JSON.stringify(user))
-      setUser(user)
-      blogService.setToken(user.token)
-      setUsername('')
-      setPassword('')
-    } catch (exception) {
-      console.error('Error in login', exception)
-      showErrorMessage('wrong username or password')
-    }
+    dispatch(loginUser(username, password))
+    setUsername('')
+    setPassword('')
   }
 
   const handleLogout = (event) => {
     event.preventDefault()
-
-    window.localStorage.removeItem('bloglistAppUser')
-    setUser(null)
-    blogService.setToken(null)
+    dispatch(logout())
   }
 
   const addBlog = async (blogParams) => {
@@ -71,10 +56,6 @@ const App = () => {
     if (window.confirm(`Remove blog ${blog.title} by ${blog.author}?`)) {
       dispatch(deleteBlog(blog))
     }
-  }
-
-  const showErrorMessage = (message) => {
-    dispatch(showNotification(message, 'error'))
   }
 
   const loginForm = () => (
