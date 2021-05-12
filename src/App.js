@@ -6,7 +6,7 @@ import Togglable from './components/Togglable'
 import CreateForm from './components/CreateForm'
 import blogService from './services/blogs'
 import loginService from './services/login'
-import { setNotification, clearNotification } from './reducers/notificationReducer'
+import { showNotification } from './reducers/notificationReducer'
 import { initializeBlogs, addNewBlog, updateBlog, deleteBlog } from './reducers/blogsReducer'
 
 const App = () => {
@@ -93,13 +93,11 @@ const App = () => {
   }
 
   const showMessage = (message) => {
-    dispatch(setNotification(message, 'info'))
-    setTimeout(() => dispatch(clearNotification()), 5000)
+    dispatch(showNotification(message, 'info'))
   }
 
   const showErrorMessage = (message) => {
-    dispatch(setNotification(message, 'error'))
-    setTimeout(() => dispatch(clearNotification()), 5000)
+    dispatch(showNotification(message, 'error'))
   }
 
   const loginForm = () => (
