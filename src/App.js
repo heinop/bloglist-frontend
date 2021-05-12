@@ -59,42 +59,23 @@ const App = () => {
   }
 
   const addBlog = async (blogParams) => {
-    try {
-      createFormRef.current.toggleVisibility()
-      dispatch(addNewBlog(blogParams))
-      showMessage(`a new blog ${blogParams.title} by ${blogParams.author} added`)
-    } catch (exception) {
-      console.error('Error creating new blog', exception)
-      showErrorMessage('Error adding new blog')
-    }
+    createFormRef.current.toggleVisibility()
+    dispatch(addNewBlog(blogParams))
   }
 
   const updateExistingBlog = async (blogParams) => {
-    try {
-      dispatch(updateBlog(blogParams))
-      showMessage(`Blog ${blogParams.title} by ${blogParams.author} updated`)
-    } catch (exception) {
-      console.error('Error updating blog', exception)
-      showErrorMessage('Error updating blog')
-    }
+    dispatch(updateBlog(blogParams))
   }
 
   const deleteExistingBlog = async (blog) => {
     if (window.confirm(`Remove blog ${blog.title} by ${blog.author}?`)) {
-      try {
-        console.log('Deleting blog ' + blog.id)
-        dispatch(deleteBlog(blog.id))
-        showMessage(`Blog ${blog.title} by ${blog.author} deleted`)
-      } catch (exception) {
-        console.error('Error deleting blog', exception)
-        showErrorMessage('Error deleting blog')
-      }
+      dispatch(deleteBlog(blog))
     }
   }
 
-  const showMessage = (message) => {
-    dispatch(showNotification(message, 'info'))
-  }
+  // const showMessage = (message) => {
+  //   dispatch(showNotification(message, 'info'))
+  // }
 
   const showErrorMessage = (message) => {
     dispatch(showNotification(message, 'error'))
