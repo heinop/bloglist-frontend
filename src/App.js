@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import Blog from './components/Blog'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
@@ -7,18 +7,19 @@ import CreateForm from './components/CreateForm'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import { setNotification, clearNotification } from './reducers/notificationReducer'
+import { initializeBlogs, addNewBlog } from './reducers/blogsReducer'
 
 const App = () => {
   const dispatch = useDispatch()
-  const [blogs, setBlogs] = useState([])
+  const blogs = useSelector(state => state.blogs)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
 
   useEffect(() => {
     async function fetchBlogs() {
-      let tempBlogs = await blogService.getAll()
-      setBlogs(orderBlogs(tempBlogs))
+      let initialBlogs = await blogService.getAll()
+      dispatch(initializeBlogs(initialBlogs))
     }
     fetchBlogs()
   }, [])
@@ -36,8 +37,6 @@ const App = () => {
     marginLeft: 5,
     marginBottom: 3
   }
-
-  const orderBlogs = (blogArray) => blogArray.sort((a, b) => b.likes - a.likes)
 
   const handleLogin = async (event) => {
     event.preventDefault()
@@ -68,7 +67,7 @@ const App = () => {
       createFormRef.current.toggleVisibility()
       let newBlog = await blogService.create(blogParams)
       console.log('Created blog', JSON.stringify(newBlog))
-      setBlogs(orderBlogs(blogs.concat(newBlog)))
+      dispatch(addNewBlog(newBlog))
       showMessage(`a new blog ${newBlog.title} by ${newBlog.author} added`)
     } catch (exception) {
       console.error('Error creating new blog', exception)
@@ -79,9 +78,9 @@ const App = () => {
   const updateBlog = async (blogParams) => {
     try {
       let updatedBlog = await blogService.update(blogParams)
-      setBlogs(orderBlogs(blogs.map(blog => {
-        return blog.id === updatedBlog.id ? updatedBlog : blog
-      })))
+      // setBlogs(orderBlogs(blogs.map(blog => {
+      //   return blog.id === updatedBlog.id ? updatedBlog : blog
+      // })))
       showMessage(`Blog ${updatedBlog.title} by ${updatedBlog.author} updated`)
     } catch (exception) {
       console.error('Error updating blog', exception)
@@ -94,7 +93,7 @@ const App = () => {
       try {
         console.log('Deleting blog ' + blog.id)
         await blogService.remove(blog.id)
-        setBlogs(orderBlogs(blogs.filter(b => b.id !== blog.id)))
+        // setBlogs(orderBlogs(blogs.filter(b => b.id !== blog.id)))
         showMessage(`Blog ${blog.title} by ${blog.author} deleted`)
       } catch (exception) {
         console.error('Error deleting blog', exception)
