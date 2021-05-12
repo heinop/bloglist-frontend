@@ -17,12 +17,8 @@ const App = () => {
   const [user, setUser] = useState(null)
 
   useEffect(() => {
-    async function fetchBlogs() {
-      let initialBlogs = await blogService.getAll()
-      dispatch(initializeBlogs(initialBlogs))
-    }
-    fetchBlogs()
-  }, [])
+    dispatch(initializeBlogs())
+  }, [dispatch])
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('bloglistAppUser')
@@ -65,10 +61,8 @@ const App = () => {
   const addBlog = async (blogParams) => {
     try {
       createFormRef.current.toggleVisibility()
-      let newBlog = await blogService.create(blogParams)
-      console.log('Created blog', JSON.stringify(newBlog))
-      dispatch(addNewBlog(newBlog))
-      showMessage(`a new blog ${newBlog.title} by ${newBlog.author} added`)
+      dispatch(addNewBlog(blogParams))
+      showMessage(`a new blog ${blogParams.title} by ${blogParams.author} added`)
     } catch (exception) {
       console.error('Error creating new blog', exception)
       showErrorMessage('Error adding new blog')
@@ -77,9 +71,8 @@ const App = () => {
 
   const updateExistingBlog = async (blogParams) => {
     try {
-      let updatedBlog = await blogService.update(blogParams)
-      dispatch(updateBlog(updatedBlog))
-      showMessage(`Blog ${updatedBlog.title} by ${updatedBlog.author} updated`)
+      dispatch(updateBlog(blogParams))
+      showMessage(`Blog ${blogParams.title} by ${blogParams.author} updated`)
     } catch (exception) {
       console.error('Error updating blog', exception)
       showErrorMessage('Error updating blog')
@@ -90,7 +83,6 @@ const App = () => {
     if (window.confirm(`Remove blog ${blog.title} by ${blog.author}?`)) {
       try {
         console.log('Deleting blog ' + blog.id)
-        await blogService.remove(blog.id)
         dispatch(deleteBlog(blog.id))
         showMessage(`Blog ${blog.title} by ${blog.author} deleted`)
       } catch (exception) {

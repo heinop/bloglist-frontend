@@ -1,30 +1,45 @@
-export const initializeBlogs = (blogs) => {
-  return {
-    type: 'INIT_BLOGS',
-    data: blogs
+import blogService from '../services/blogs'
+
+export const initializeBlogs = () => {
+  return async dispatch => {
+    const blogs = await await blogService.getAll()
+    dispatch({
+      type: 'INIT_BLOGS',
+      data: blogs
+    })
   }
 }
 
-export const addNewBlog = (newBlog) => {
-  return {
-    type: 'ADD_NEW_BLOG',
-    data: newBlog
+export const addNewBlog = (blogParams) => {
+  return async dispatch => {
+    const newBlog = await blogService.create(blogParams)
+    console.log('Created blog', JSON.stringify(newBlog))
+    dispatch({
+      type: 'ADD_NEW_BLOG',
+      data: newBlog
+    })
   }
 }
 
-export const updateBlog = (updatedBlog) => {
-  return {
-    type: 'UPDATE_BLOG',
-    data: updatedBlog
+export const updateBlog = (blogParams) => {
+  return async dispatch => {
+    const updatedBlog = await blogService.update(blogParams)
+    dispatch({
+      type: 'UPDATE_BLOG',
+      data: updatedBlog
+    })
   }
 }
 
 export const deleteBlog = (id) => {
-  return {
-    type: 'DELETE_BLOG',
-    data: {
-      id
-    }
+  return async dispatch => {
+    await blogService.remove(id)
+    dispatch({
+      type: 'DELETE_BLOG',
+      data: {
+        id
+      }
+    })
   }
 }
 
