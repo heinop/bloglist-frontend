@@ -73,10 +73,6 @@ const App = () => {
     }
   }
 
-  // const showMessage = (message) => {
-  //   dispatch(showNotification(message, 'info'))
-  // }
-
   const showErrorMessage = (message) => {
     dispatch(showNotification(message, 'error'))
   }
