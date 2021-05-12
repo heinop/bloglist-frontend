@@ -12,6 +12,22 @@ export const addNewBlog = (newBlog) => {
   }
 }
 
+export const updateBlog = (updatedBlog) => {
+  return {
+    type: 'UPDATE_BLOG',
+    data: updatedBlog
+  }
+}
+
+export const deleteBlog = (id) => {
+  return {
+    type: 'DELETE_BLOG',
+    data: {
+      id
+    }
+  }
+}
+
 const orderBlogs = (blogArray) => blogArray.sort((a, b) => b.likes - a.likes)
 
 const blogsReducer = (state = [], action) => {
@@ -20,6 +36,14 @@ const blogsReducer = (state = [], action) => {
     return orderBlogs(action.data)
   case 'ADD_NEW_BLOG':
     return orderBlogs(state.concat(action.data))
+  case 'UPDATE_BLOG':
+    return orderBlogs(
+      state.map(blog => blog.id === action.data.id ? action.data : blog)
+    )
+  case 'DELETE_BLOG':
+    return orderBlogs(
+      state.filter(blog => blog.id !== action.data.id)
+    )
   default:
     return state
   }

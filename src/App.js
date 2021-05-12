@@ -7,7 +7,7 @@ import CreateForm from './components/CreateForm'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import { setNotification, clearNotification } from './reducers/notificationReducer'
-import { initializeBlogs, addNewBlog } from './reducers/blogsReducer'
+import { initializeBlogs, addNewBlog, updateBlog, deleteBlog } from './reducers/blogsReducer'
 
 const App = () => {
   const dispatch = useDispatch()
@@ -75,12 +75,10 @@ const App = () => {
     }
   }
 
-  const updateBlog = async (blogParams) => {
+  const updateExistingBlog = async (blogParams) => {
     try {
       let updatedBlog = await blogService.update(blogParams)
-      // setBlogs(orderBlogs(blogs.map(blog => {
-      //   return blog.id === updatedBlog.id ? updatedBlog : blog
-      // })))
+      dispatch(updateBlog(updatedBlog))
       showMessage(`Blog ${updatedBlog.title} by ${updatedBlog.author} updated`)
     } catch (exception) {
       console.error('Error updating blog', exception)
@@ -88,12 +86,12 @@ const App = () => {
     }
   }
 
-  const deleteBlog = async (blog) => {
+  const deleteExistingBlog = async (blog) => {
     if (window.confirm(`Remove blog ${blog.title} by ${blog.author}?`)) {
       try {
         console.log('Deleting blog ' + blog.id)
         await blogService.remove(blog.id)
-        // setBlogs(orderBlogs(blogs.filter(b => b.id !== blog.id)))
+        dispatch(deleteBlog(blog.id))
         showMessage(`Blog ${blog.title} by ${blog.author} deleted`)
       } catch (exception) {
         console.error('Error deleting blog', exception)
@@ -155,7 +153,7 @@ const App = () => {
         {blogs.map(blog =>
           <Blog key={blog.id} blog={blog}
             showRemove={user.username === blog.user.username}
-            updateBlog={updateBlog} deleteBlog={deleteBlog} />
+            updateBlog={updateExistingBlog} deleteBlog={deleteExistingBlog} />
         )}
       </div>
     </div>
