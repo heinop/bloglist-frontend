@@ -1,7 +1,11 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
+import { useDispatch } from 'react-redux'
 
-const CreateForm = ({ handleCreate }) => {
+import { addNewBlog } from '../reducers/blogsReducer'
+
+const CreateForm = ({ formRef }) => {
+  const dispatch = useDispatch()
 
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
@@ -14,12 +18,12 @@ const CreateForm = ({ handleCreate }) => {
 
   const handleSubmit = (event) => {
     event.preventDefault()
-
-    handleCreate({
+    formRef.current.toggleVisibility()
+    dispatch(addNewBlog({
       title,
       author,
       url
-    })
+    }))
   }
 
   return (
@@ -48,7 +52,7 @@ const CreateForm = ({ handleCreate }) => {
 }
 
 CreateForm.propTypes = {
-  handleCreate: PropTypes.func.isRequired
+  formRef: PropTypes.object.isRequired
 }
 
 export default CreateForm
