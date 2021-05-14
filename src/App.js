@@ -1,16 +1,15 @@
 import React, { useEffect, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import Blog from './components/Blog'
+import Blogs from './components/Blogs'
 import Notification from './components/Notification'
 import LoginForm from './components/LoginForm'
 import Togglable from './components/Togglable'
 import CreateForm from './components/CreateForm'
 import { setUser, removeUser } from './reducers/userReducer'
-import { initializeBlogs, addNewBlog, updateBlog, deleteBlog } from './reducers/blogsReducer'
+import { initializeBlogs, addNewBlog } from './reducers/blogsReducer'
 
 const App = () => {
   const dispatch = useDispatch()
-  const blogs = useSelector(state => state.blogs)
   const user = useSelector(state => state.user)
 
   useEffect(() => {
@@ -40,16 +39,6 @@ const App = () => {
     dispatch(addNewBlog(blogParams))
   }
 
-  const updateExistingBlog = async (blogParams) => {
-    dispatch(updateBlog(blogParams))
-  }
-
-  const deleteExistingBlog = async (blog) => {
-    if (window.confirm(`Remove blog ${blog.title} by ${blog.author}?`)) {
-      dispatch(deleteBlog(blog))
-    }
-  }
-
   const showBlogs = () => (
     <div>
       <h2>blogs</h2>
@@ -59,13 +48,7 @@ const App = () => {
         <button id="logout-button" style={buttonStyle} type="button" onClick={handleLogout}>logout</button>
       </p>
       {createForm()}
-      <div id="blogs">
-        {blogs.map(blog =>
-          <Blog key={blog.id} blog={blog}
-            showRemove={user.username === blog.user.username}
-            updateBlog={updateExistingBlog} deleteBlog={deleteExistingBlog} />
-        )}
-      </div>
+      <Blogs />
     </div>
   )
 
