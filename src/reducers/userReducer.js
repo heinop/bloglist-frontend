@@ -1,39 +1,21 @@
-import loginService from '../services/login'
 import blogService from '../services/blogs'
-import { showNotification } from './notificationReducer'
-
-export const loginUser = (username, password) => {
-  return async dispatch => {
-    try {
-      const user = await loginService.login({ username, password })
-      window.localStorage.setItem('bloglistAppUser', JSON.stringify(user))
-      dispatch({
-        type: 'LOGIN',
-        data: user
-      })
-      blogService.setToken(user.token)
-    } catch (exception) {
-      console.error('Error in login', exception)
-      dispatch(showNotification('wrong username or password', 'error'))
-    }
-  }
-}
 
 export const setUser = (user) => {
   return dispatch => {
+    window.localStorage.setItem('bloglistAppUser', JSON.stringify(user))
     dispatch({
-      type: 'LOGIN',
+      type: 'SET_USER',
       data: user
     })
     blogService.setToken(user.token)
   }
 }
 
-export const logout = () => {
+export const removeUser = () => {
   return dispatch => {
     window.localStorage.removeItem('bloglistAppUser')
     dispatch({
-      type: 'LOGOUT'
+      type: 'REMOVE_USER'
     })
     blogService.setToken(null)
   }
@@ -41,9 +23,9 @@ export const logout = () => {
 
 const userReducer = (state = null, action) => {
   switch (action.type) {
-  case 'LOGIN':
+  case 'SET_USER':
     return action.data
-  case 'LOGOUT':
+  case 'REMOVE_USER':
     return null
   default:
     return state

@@ -1,18 +1,17 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import Blog from './components/Blog'
 import Notification from './components/Notification'
+import LoginForm from './components/LoginForm'
 import Togglable from './components/Togglable'
 import CreateForm from './components/CreateForm'
-import { loginUser, setUser, logout } from './reducers/userReducer'
+import { setUser, removeUser } from './reducers/userReducer'
 import { initializeBlogs, addNewBlog, updateBlog, deleteBlog } from './reducers/blogsReducer'
 
 const App = () => {
   const dispatch = useDispatch()
   const blogs = useSelector(state => state.blogs)
   const user = useSelector(state => state.user)
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
 
   useEffect(() => {
     dispatch(initializeBlogs())
@@ -31,16 +30,9 @@ const App = () => {
     marginBottom: 3
   }
 
-  const handleLogin = async (event) => {
-    event.preventDefault()
-    dispatch(loginUser(username, password))
-    setUsername('')
-    setPassword('')
-  }
-
   const handleLogout = (event) => {
     event.preventDefault()
-    dispatch(logout())
+    dispatch(removeUser())
   }
 
   const addBlog = async (blogParams) => {
@@ -57,36 +49,6 @@ const App = () => {
       dispatch(deleteBlog(blog))
     }
   }
-
-  const loginForm = () => (
-    <div>
-      <h2>log in to application</h2>
-      <Notification />
-      <form onSubmit={handleLogin}>
-        <p>
-          username
-          <input
-            id="username"
-            type="text"
-            value={username}
-            name="Username"
-            onChange={({ target }) => setUsername(target.value)}
-          />
-        </p>
-        <p>
-          password
-          <input
-            id="password"
-            type="password"
-            value={password}
-            name="Password"
-            onChange={({ target }) => setPassword(target.value)}
-          />
-        </p>
-        <button id="login-button" style={buttonStyle} type="submit">login</button>
-      </form>
-    </div>
-  )
 
   const showBlogs = () => (
     <div>
@@ -118,7 +80,7 @@ const App = () => {
   return (
     <div>
       {user === null ?
-        loginForm() :
+        <LoginForm /> :
         showBlogs()
       }
     </div>
