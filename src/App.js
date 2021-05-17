@@ -3,10 +3,12 @@ import { useDispatch, useSelector } from 'react-redux'
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom'
 import Blogs from './components/Blogs'
 import Users from './components/Users'
+import User from './components/User'
 import Notification from './components/Notification'
 import LoginForm from './components/LoginForm'
 import { setUser, removeUser } from './reducers/userReducer'
 import { initializeBlogs } from './reducers/blogsReducer'
+import { initializeUsers } from './reducers/usersReducer'
 
 const App = () => {
   const dispatch = useDispatch()
@@ -15,6 +17,10 @@ const App = () => {
   useEffect(() => {
     dispatch(initializeBlogs())
   }, [dispatch])
+
+  useEffect(() => {
+    dispatch((initializeUsers()))
+  },[dispatch])
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('bloglistAppUser')
@@ -61,6 +67,9 @@ const App = () => {
             <Switch>
               <Route path="/blogs">
                 <Blogs />
+              </Route>
+              <Route path="/users/:id">
+                <User />
               </Route>
               <Route path="/users">
                 <Users />
