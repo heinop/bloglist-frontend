@@ -1,6 +1,8 @@
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom'
 import Blogs from './components/Blogs'
+import Users from './components/Users'
 import Notification from './components/Notification'
 import LoginForm from './components/LoginForm'
 import { setUser, removeUser } from './reducers/userReducer'
@@ -27,6 +29,10 @@ const App = () => {
     marginBottom: 3
   }
 
+  const padding = {
+    padding: 5
+  }
+
   const handleLogout = (event) => {
     event.preventDefault()
     dispatch(removeUser())
@@ -46,8 +52,24 @@ const App = () => {
       {user === null ?
         <LoginForm /> :
         <div>
-          {showLoginInfo()}
-          <Blogs />
+          <Router>
+            {showLoginInfo()}
+            <div>
+              <Link style={padding} to="/blogs">blogs</Link>
+              <Link style={padding} to="/users">users</Link>
+            </div>
+            <Switch>
+              <Route path="/blogs">
+                <Blogs />
+              </Route>
+              <Route path="/users">
+                <Users />
+              </Route>
+              <Route path="/">
+                <Blogs />
+              </Route>
+            </Switch>
+          </Router>
         </div>
       }
     </div>
