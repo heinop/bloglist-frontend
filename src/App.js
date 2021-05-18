@@ -2,6 +2,7 @@ import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom'
 import Blogs from './components/Blogs'
+import Blog from './components/Blog'
 import Users from './components/Users'
 import User from './components/User'
 import Notification from './components/Notification'
@@ -65,6 +66,9 @@ const App = () => {
               <Link style={padding} to="/users">users</Link>
             </div>
             <Switch>
+              <Route path="/blogs/:id">
+                <Blog />
+              </Route>
               <Route path="/blogs">
                 <Blogs />
               </Route>
