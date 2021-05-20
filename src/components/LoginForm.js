@@ -1,5 +1,6 @@
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { useHistory } from 'react-router-dom'
 
 import { setUsername, setPassword } from '../reducers/loginReducer'
 import { loginUser } from '../reducers/loginReducer'
@@ -11,12 +12,14 @@ const buttonStyle = {
 
 const LoginForm = () => {
   const dispatch = useDispatch()
+  const history = useHistory()
   const username = useSelector(state => state.login.username)
   const password = useSelector(state => state.login.password)
 
   const handleSubmit = (event) => {
     event.preventDefault()
     dispatch(loginUser(username, password))
+    history.push('/')
   }
 
   return (

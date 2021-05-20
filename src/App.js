@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom'
+import { BrowserRouter as Router, Switch, Route, Link, Redirect } from 'react-router-dom'
 import Blogs from './components/Blogs'
 import Blog from './components/Blog'
 import Users from './components/Users'
@@ -21,7 +21,7 @@ const App = () => {
 
   useEffect(() => {
     dispatch((initializeUsers()))
-  },[dispatch])
+  }, [dispatch])
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('bloglistAppUser')
@@ -62,35 +62,35 @@ const App = () => {
     <div>
       <h2>Blogs App</h2>
       <Notification />
-      {user === null ?
-        <LoginForm /> :
-        <div>
-          <Router>
-            <div style={navbar}>
-              <Link style={padding} to="/blogs">blogs</Link>
-              <Link style={padding} to="/users">users</Link>
-              {showLoginInfo()}
-            </div>
-            <Switch>
-              <Route path="/blogs/:id">
-                <Blog />
-              </Route>
-              <Route path="/blogs">
-                <Blogs />
-              </Route>
-              <Route path="/users/:id">
-                <User />
-              </Route>
-              <Route path="/users">
-                <Users />
-              </Route>
-              <Route path="/">
-                <Blogs />
-              </Route>
-            </Switch>
-          </Router>
-        </div>
-      }
+      <Router>
+        {user === null ?
+          null
+          : <div style={navbar}>
+            <Link style={padding} to="/blogs">blogs</Link>
+            <Link style={padding} to="/users">users</Link>
+            {showLoginInfo()}
+          </div>}
+        <Switch>
+          <Route path="/login">
+            {user ? <Redirect to="/blogs" /> : <LoginForm />}
+          </Route>
+          <Route path="/blogs/:id">
+            {user ? <Blog /> : <Redirect to="/login" />}
+          </Route>
+          <Route path="/blogs">
+            {user ? <Blogs /> : <Redirect to="/login" />}
+          </Route>
+          <Route path="/users/:id">
+            {user ? <User /> : <Redirect to="/login" />}
+          </Route>
+          <Route path="/users">
+            {user ? <Users /> : <Redirect to="/login" />}
+          </Route>
+          <Route path="/">
+            {user ? <Blogs /> : <Redirect to="/login" />}
+          </Route>
+        </Switch>
+      </Router>
     </div>
   )
 }
