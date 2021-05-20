@@ -40,16 +40,22 @@ const App = () => {
     padding: 5
   }
 
+  const navbar = {
+    paddingTop: 8,
+    paddingBottom: 4,
+    backgroundColor: 'grey'
+  }
+
   const handleLogout = (event) => {
     event.preventDefault()
     dispatch(removeUser())
   }
 
   const showLoginInfo = () => (
-    <p>
+    <span>
       {user.name} logged in
       <button id="logout-button" style={buttonStyle} type="button" onClick={handleLogout}>logout</button>
-    </p>
+    </span>
   )
 
   return (
@@ -60,10 +66,10 @@ const App = () => {
         <LoginForm /> :
         <div>
           <Router>
-            {showLoginInfo()}
-            <div>
+            <div style={navbar}>
               <Link style={padding} to="/blogs">blogs</Link>
               <Link style={padding} to="/users">users</Link>
+              {showLoginInfo()}
             </div>
             <Switch>
               <Route path="/blogs/:id">
