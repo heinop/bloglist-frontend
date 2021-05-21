@@ -63,6 +63,23 @@ export const deleteBlog = (blog) => {
   }
 }
 
+export const addComment = (id, comment) => {
+  return async dispatch => {
+    try {
+      console.log('Adding comment', comment)
+      const commentedBlog = await blogService.addComment(id, comment)
+      dispatch(showNotification(`Comment "${comment}" added to blog ${commentedBlog.title}`))
+      dispatch({
+        type: 'UPDATE_BLOG',
+        data: commentedBlog
+      })
+    } catch (exception) {
+      console.error('Error adding comment', exception)
+      dispatch(showNotification('Error adding comment', 'error'))
+    }
+  }
+}
+
 const orderBlogs = (blogArray) => blogArray.sort((a, b) => b.likes - a.likes)
 
 const blogsReducer = (state = [], action) => {

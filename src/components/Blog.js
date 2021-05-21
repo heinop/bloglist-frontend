@@ -2,7 +2,7 @@ import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 
-import { updateBlog, deleteBlog } from '../reducers/blogsReducer'
+import { updateBlog, deleteBlog, addComment } from '../reducers/blogsReducer'
 
 const Blog = () => {
   const dispatch = useDispatch()
@@ -39,6 +39,15 @@ const Blog = () => {
     <button id="remove-button" style={buttonStyle} onClick={removeBlog}>remove</button>
   )
 
+  const submitComment = (event) => {
+    event.preventDefault()
+    const comment = event.target.comment.value
+    event.target.comment.value = ''
+    if (comment) {
+      dispatch(addComment(blog.id, comment))
+    }
+  }
+
   if (!blog) {
     return null
   }
@@ -57,6 +66,12 @@ const Blog = () => {
         added by {blog.user.name} {user.username === blog.user.username ? removeButton : ''}
       </div>
       <h4>comments</h4>
+      <div>
+        <form onSubmit={submitComment}>
+          <input name="comment" />
+          <button type="submit">add comment</button>
+        </form>
+      </div>
       <ul>
         {blog.comments.map(comment => <li key={comment}>{comment}</li>)}
       </ul>
